@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="Polirrubro.Winforms/Polirrubro.Winforms.csproj" />
+  <Project Path="Polirubro.Datos/Polirubro.Datos.csproj" />
+  <Project Path="Polirubro.Entidades/Polirubro.Entidades.csproj" />
+  <Project Path="Polirubro.Negocio/Polirubro.Negocio.csproj" />
+</Solution>
