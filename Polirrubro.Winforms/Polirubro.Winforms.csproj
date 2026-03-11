@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Polirubro.Datos\Polirubro.Datos.csproj" />
     <ProjectReference Include="..\Polirubro.Negocio\Polirubro.Negocio.csproj" />
   </ItemGroup>
 

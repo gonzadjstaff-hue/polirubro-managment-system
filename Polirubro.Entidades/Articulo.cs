@@ -12,7 +12,8 @@ namespace Polirubro.Entidades
         public decimal Costo { get; set; }
         public int Stock { get; set; }
         public int CategoriaId { get; set; }
+        public Categoria Categoria { get; set; }
 
-    }
+        }
     }
 
