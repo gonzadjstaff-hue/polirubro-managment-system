@@ -13,7 +13,21 @@ namespace Polirubro.Entidades
         public int Stock { get; set; }
         public int CategoriaId { get; set; }
         public Categoria Categoria { get; set; }
+        public int StockMinimo { get; set; }
+        public string EstadoStock
+        {
+            get
+            {
+                if (Stock <= StockMinimo)
+                    return "Bajo";
 
+                if (Stock <= StockMinimo + 3)
+                    return "Cerca";
+
+                return "Ok";
+            }
         }
+
+    }
     }
 

@@ -1,0 +1,207 @@
+﻿<Window x:Class="PolirubroWPF.FrmDashboard"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Dashboard"
+        Height="700"
+        Width="950"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+        Background="#F5F5F5">
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Dashboard de Ventas"
+                   FontSize="28"
+                   FontWeight="Bold"
+                   Foreground="#333333"
+                   Margin="0,0,0,20"/>
+
+        <UniformGrid Grid.Row="1"
+                     Columns="2"
+                     Rows="4"
+                     Margin="0,10,0,10"
+         VerticalAlignment="Top">
+
+            <Border Margin="10"
+                    Padding="20"
+                    Background="White"
+                    CornerRadius="10"
+                    BorderBrush="#DDDDDD"
+                    BorderThickness="1">
+                <StackPanel>
+                    <TextBlock Text="Ventas hoy"
+                               FontSize="16"
+                               FontWeight="SemiBold"
+                               Foreground="#555555"/>
+                    <TextBlock x:Name="txtVentasHoy"
+                               Text="$0"
+                               FontSize="26"
+                               FontWeight="Bold"
+                               Foreground="#2196F3"
+                               Margin="0,10,0,0"/>
+                </StackPanel>
+            </Border>
+
+            <Border Margin="10"
+                    Padding="20"
+                    Background="White"
+                    CornerRadius="10"
+                    BorderBrush="#DDDDDD"
+                    BorderThickness="1">
+                <StackPanel>
+                    <TextBlock Text="Ventas del mes"
+                               FontSize="16"
+                               FontWeight="SemiBold"
+                               Foreground="#555555"/>
+                    <TextBlock x:Name="txtVentasMes"
+                               Text="$0"
+                               FontSize="26"
+                               FontWeight="Bold"
+                               Foreground="#4CAF50"
+                               Margin="0,10,0,0"/>
+                </StackPanel>
+            </Border>
+
+            <Border Margin="10"
+                    Padding="20"
+                    Background="White"
+                    CornerRadius="10"
+                    BorderBrush="#DDDDDD"
+                    BorderThickness="1">
+                <StackPanel>
+                    <TextBlock Text="Ventas del año"
+                               FontSize="16"
+                               FontWeight="SemiBold"
+                               Foreground="#555555"/>
+                    <TextBlock x:Name="txtVentasAnio"
+                               Text="$0"
+                               FontSize="26"
+                               FontWeight="Bold"
+                               Foreground="#9C27B0"
+                               Margin="0,10,0,0"/>
+                </StackPanel>
+            </Border>
+
+            <Border Margin="10"
+                    Padding="20"
+                    Background="White"
+                    CornerRadius="10"
+                    BorderBrush="#DDDDDD"
+                    BorderThickness="1">
+                <StackPanel>
+                    <TextBlock Text="Cantidad de ventas hoy"
+                               FontSize="16"
+                               FontWeight="SemiBold"
+                               Foreground="#555555"/>
+                    <TextBlock x:Name="txtCantidadVentasHoy"
+                               Text="0"
+                               FontSize="26"
+                               FontWeight="Bold"
+                               Foreground="#FF9800"
+                               Margin="0,10,0,0"/>
+                </StackPanel>
+            </Border>
+
+            <Border Margin="10"
+                    Padding="20"
+                    Background="White"
+                    CornerRadius="10"
+                    BorderBrush="#DDDDDD"
+                    BorderThickness="1">
+                <StackPanel>
+                    <TextBlock Text="Cantidad de ventas del mes"
+                               FontSize="16"
+                               FontWeight="SemiBold"
+                               Foreground="#555555"/>
+                    <TextBlock x:Name="txtCantidadVentasMes"
+                               Text="0"
+                               FontSize="26"
+                               FontWeight="Bold"
+                               Foreground="#607D8B"
+                               Margin="0,10,0,0"/>
+                </StackPanel>
+            </Border>
+
+            <Border Margin="10"
+                    Padding="20"
+                    Background="White"
+                    CornerRadius="10"
+                    BorderBrush="#DDDDDD"
+                    BorderThickness="1">
+                <StackPanel>
+                    <TextBlock Text="Cantidad de ventas del año"
+                               FontSize="16"
+                               FontWeight="SemiBold"
+                               Foreground="#555555"/>
+                    <TextBlock x:Name="txtCantidadVentasAnio"
+                               Text="0"
+                               FontSize="26"
+                               FontWeight="Bold"
+                               Foreground="#795548"
+                               Margin="0,10,0,0"/>
+                </StackPanel>
+            </Border>
+
+            <Border Margin="10"
+                    Padding="20"
+                    Background="White"
+                    CornerRadius="10"
+                    BorderBrush="#DDDDDD"
+                    BorderThickness="1">
+                <StackPanel>
+                    <TextBlock Text="Producto más vendido"
+                               FontSize="16"
+                               FontWeight="SemiBold"
+                               Foreground="#555555"/>
+                    <TextBlock x:Name="txtProductoMasVendido"
+                               Text="-"
+                               FontSize="22"
+                               FontWeight="Bold"
+                               Foreground="#E91E63"
+                               Margin="0,10,0,0"
+                               TextWrapping="Wrap"/>
+                </StackPanel>
+            </Border>
+
+            <Border Margin="10"
+                    Padding="20"
+                    Background="White"
+                    CornerRadius="10"
+                    BorderBrush="#DDDDDD"
+                    BorderThickness="1">
+                <StackPanel>
+                    <TextBlock Text="Cantidad vendida del producto"
+                               FontSize="16"
+                               FontWeight="SemiBold"
+                               Foreground="#555555"/>
+                    <TextBlock x:Name="txtCantidadProductoMasVendido"
+                               Text="0"
+                               FontSize="26"
+                               FontWeight="Bold"
+                               Foreground="#009688"
+                               Margin="0,10,0,0"/>
+                </StackPanel>
+            </Border>
+
+        </UniformGrid>
+
+        <StackPanel Grid.Row="2"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Margin="0,20,0,0">
+            <Button Content="Cerrar"
+                    Width="120"
+                    Height="40"
+                    FontSize="16"
+                    FontWeight="Bold"
+                    Background="#757575"
+                    Foreground="White"
+                    Click="BtnCerrar_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>

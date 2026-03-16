@@ -8,9 +8,12 @@ namespace Polirubro.Datos
         public DbSet<Articulo> Articulos { get; set; }  
         public DbSet<Categoria> Categorias  { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        public DbSet<Venta> Ventas { get; set; }
+        public DbSet<VentaDetalle> VentaDetalles { get; set; }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
-            optionsBuilder.UseSqlite("Data Source=polirubro.db");
+            options.UseSqlite(@"Data Source=C:\Users\Gonzalo\Desktop\curso c# nivel 2\PolirrubroApp\PolirubroWPF\bin\Debug\net10.0-windows\polirubro.db");
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

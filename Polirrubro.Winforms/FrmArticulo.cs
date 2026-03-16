@@ -73,5 +73,10 @@ namespace Polirubro.Winforms
             this.Close();
 
         }
+
+        private void FrmArticulo_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

@@ -1,0 +1,199 @@
+﻿<Window x:Class="PolirubroWPF.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Artículos"
+        Height="750"
+        Width="1400"
+        WindowStartupLocation="CenterScreen">
+
+    <Grid Margin="20">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Button x:Name="btnAlertaStock"
+                Grid.Row="0"
+                Content="Atención: hay productos con stock bajo"
+                Height="40"
+                HorizontalAlignment="Left"
+                Padding="20,0"
+                Margin="0,0,0,15"
+                Background="#F44336"
+                Foreground="White"
+                FontSize="16"
+                FontWeight="Bold"
+                Visibility="Collapsed"
+                Click="BtnAlertaStock_Click"/>
+
+        <StackPanel Grid.Row="1"
+                    Orientation="Horizontal"
+                    Margin="0,0,0,15">
+            <TextBlock Text="Buscar"
+                       VerticalAlignment="Center"
+                       Margin="0,0,10,0"/>
+            <TextBox x:Name="txtBuscar"
+                     Width="250"
+                     TextChanged="txtBuscar_TextChanged"/>
+        </StackPanel>
+
+        <DataGrid x:Name="dgArticulos"
+                  Grid.Row="2"
+                  AutoGenerateColumns="False"
+                  CanUserAddRows="False"
+                  Margin="0,0,0,20"
+                  FontSize="14"
+                  IsReadOnly="True"
+                  LoadingRow="dgArticulos_LoadingRow">
+
+            <DataGrid.Columns>
+
+                <DataGridTextColumn Header="N° de artículo"
+                                    Binding="{Binding CodigoProducto}"
+                                    Width="120"/>
+
+                <DataGridTextColumn Header="Nombre"
+                                    Binding="{Binding Nombre}"
+                                    Width="*"/>
+
+                <DataGridTextColumn Header="Precio"
+                                    Binding="{Binding Precio}"
+                                    Width="120"/>
+
+                <DataGridTextColumn Header="Costo"
+                                    Binding="{Binding Costo}"
+                                    Width="120"/>
+
+                <DataGridTemplateColumn Header="Stock" Width="150">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Border x:Name="bdStock"
+                                    Padding="6,2"
+                                    CornerRadius="4"
+                                    Background="Transparent">
+                                <TextBlock Text="{Binding Stock}"
+                                           HorizontalAlignment="Center"
+                                           FontWeight="Bold"/>
+                            </Border>
+                            <DataTemplate.Triggers>
+                                <DataTrigger Binding="{Binding EstadoStock}" Value="Bajo">
+                                    <Setter TargetName="bdStock" Property="Background" Value="#F44336"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding EstadoStock}" Value="Cerca">
+                                    <Setter TargetName="bdStock" Property="Background" Value="#FF9800"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding EstadoStock}" Value="Ok">
+                                    <Setter TargetName="bdStock" Property="Background" Value="#4CAF50"/>
+                                </DataTrigger>
+                            </DataTemplate.Triggers>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTextColumn Header="Categoría"
+                                    Binding="{Binding Categoria.Nombre}"
+                                    Width="150"/>
+
+                <DataGridTemplateColumn Header="Ver" Width="80">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Width="30"
+                                    Height="30"
+                                    FontSize="16"
+                                    Background="#E0E0E0"
+                                    BorderBrush="Transparent"
+                                    Click="BtnVer_Click"
+                                    CommandParameter="{Binding Id}">
+                                👁
+                            </Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn Header="Editar" Width="80">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Width="35"
+                                    Height="35"
+                                    FontSize="16"
+                                    Background="#E0E0E0"
+                                    BorderBrush="Transparent"
+                                    Click="BtnEditar_Click"
+                                    CommandParameter="{Binding Id}">
+                                ✏
+                            </Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn Header="Eliminar" Width="80">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Width="35"
+                                    Height="35"
+                                    FontSize="16"
+                                    Background="#FFCDD2"
+                                    BorderBrush="Transparent"
+                                    Click="BtnEliminar_Click"
+                                    CommandParameter="{Binding Id}">
+                                🗑
+                            </Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+            </DataGrid.Columns>
+
+        </DataGrid>
+
+        <StackPanel Grid.Row="3"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right">
+
+            <Button Content="+ Nuevo Artículo"
+                    Width="160"
+                    Height="40"
+                    FontSize="16"
+                    FontWeight="Bold"
+                    Background="#4CAF50"
+                    Foreground="White"
+                    Margin="0,0,10,0"
+                    Click="BtnNuevoArticulo_Click"/>
+
+            <Button Content="Nueva venta"
+                    Width="120"
+                    Height="40"
+                    FontSize="16"
+                    FontWeight="Bold"
+                    Background="#2196F3"
+                    Foreground="White"
+                    Margin="0,0,10,0"
+                    Click="BtnVenta_Click"/>
+
+            <Button Content="Historial de ventas"
+                    Width="150"
+                    Height="40"
+                    FontSize="16"
+                    FontWeight="Bold"
+                    Background="#607D8B"
+                    Foreground="White"
+                    Margin="0,0,10,0"
+                    Click="BtnVentas_Click"/>
+
+            <Button Content="Dashboard"
+                    Width="120"
+                    Height="40"
+                    FontSize="16"
+                    FontWeight="Bold"
+                    Background="#9C27B0"
+                    Foreground="White"
+                    Margin="0,0,10,0"
+                    Click="BtnDashboard_Click"/>
+
+        </StackPanel>
+
+    </Grid>
+</Window>

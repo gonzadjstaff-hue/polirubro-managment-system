@@ -203,6 +203,7 @@
             Controls.Add(label1);
             Name = "FrmArticulo";
             Text = "FrmArticulo";
+            Load += FrmArticulo_Load;
             ResumeLayout(false);
             PerformLayout();
         }
