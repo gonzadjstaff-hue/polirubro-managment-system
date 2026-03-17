@@ -14,6 +14,7 @@ namespace PolirubroWPF
         {
             InitializeComponent();
             CargarCategorias();
+            Loaded += (s, e) => txtCodigoProducto.Focus();
         }
 
         public FrmArticulo(int idArticulo, bool modoSoloLectura = false) : this()
@@ -72,9 +73,13 @@ namespace PolirubroWPF
 
         private void btnGuardar_Click(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(txtCodigoProducto.Text) ||
-                string.IsNullOrWhiteSpace(txtNombre.Text) ||
-                string.IsNullOrWhiteSpace(txtDescripcion.Text) ||
+            string codigoProducto = txtCodigoProducto.Text.Trim();
+            string nombre = txtNombre.Text.Trim();
+            string descripcion = txtDescripcion.Text.Trim();
+
+            if (string.IsNullOrWhiteSpace(codigoProducto) ||
+                string.IsNullOrWhiteSpace(nombre) ||
+                string.IsNullOrWhiteSpace(descripcion) ||
                 string.IsNullOrWhiteSpace(txtPrecio.Text) ||
                 string.IsNullOrWhiteSpace(txtCosto.Text) ||
                 string.IsNullOrWhiteSpace(txtStock.Text) ||
@@ -111,15 +116,17 @@ namespace PolirubroWPF
 
             using (var db = new PolirubroDbContext())
             {
+                string codigoNormalizado = codigoProducto.ToLower();
+
                 bool codigoExiste;
 
                 if (articuloId.HasValue)
                 {
-                    codigoExiste = db.Articulos.Any(a => a.CodigoProducto == txtCodigoProducto.Text && a.Id != articuloId.Value);
+                    codigoExiste = db.Articulos.Any(a => a.CodigoProducto.ToLower() == codigoNormalizado && a.Id != articuloId.Value);
                 }
                 else
                 {
-                    codigoExiste = db.Articulos.Any(a => a.CodigoProducto == txtCodigoProducto.Text);
+                    codigoExiste = db.Articulos.Any(a => a.CodigoProducto.ToLower() == codigoNormalizado);
                 }
 
                 if (codigoExiste)
@@ -146,9 +153,9 @@ namespace PolirubroWPF
                     db.Articulos.Add(articulo);
                 }
 
-                articulo.CodigoProducto = txtCodigoProducto.Text;
-                articulo.Nombre = txtNombre.Text;
-                articulo.Descripcion = txtDescripcion.Text;
+                articulo.CodigoProducto = codigoProducto;
+                articulo.Nombre = nombre;
+                articulo.Descripcion = descripcion;
                 articulo.Precio = precio;
                 articulo.Costo = costo;
                 articulo.Stock = stock;

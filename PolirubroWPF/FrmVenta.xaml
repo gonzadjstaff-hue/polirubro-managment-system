@@ -87,7 +87,8 @@
                 <TextBox x:Name="txtCantidadAgregar"
                          Grid.Column="5"
                          Margin="0,0,10,0"
-                         VerticalContentAlignment="Center"/>
+                         VerticalContentAlignment="Center"
+                         KeyDown="txtCantidadAgregar_KeyDown"/>
 
                 <Button x:Name="btnAgregarArticulo"
                         Grid.Column="6"

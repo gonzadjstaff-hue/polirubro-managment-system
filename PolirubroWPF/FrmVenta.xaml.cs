@@ -1,9 +1,11 @@
-﻿using Polirubro.Datos;
+﻿using Microsoft.EntityFrameworkCore;
+using Polirubro.Datos;
 using Polirubro.Entidades;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Windows;
 using System.Windows.Input;
 
@@ -23,6 +25,27 @@ namespace PolirubroWPF
             ActualizarEstadoCliente();
             ActualizarTotal();
             txtCodigoArticulo.Focus();
+        }
+
+        private string NormalizarTexto(string texto)
+        {
+            if (string.IsNullOrWhiteSpace(texto))
+                return string.Empty;
+
+            string textoNormalizado = texto.Trim().ToLower().Normalize(NormalizationForm.FormD);
+            StringBuilder sb = new StringBuilder();
+
+            foreach (char c in textoNormalizado)
+            {
+                UnicodeCategory uc = CharUnicodeInfo.GetUnicodeCategory(c);
+
+                if (uc != UnicodeCategory.NonSpacingMark)
+                {
+                    sb.Append(c);
+                }
+            }
+
+            return sb.ToString().Normalize(NormalizationForm.FormC);
         }
 
         private void chkConsumidorFinal_Checked(object sender, RoutedEventArgs e)
@@ -65,6 +88,14 @@ namespace PolirubroWPF
             }
         }
 
+        private void txtCantidadAgregar_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                AgregarArticulo(false);
+            }
+        }
+
         private void AgregarArticulo(bool esEscaneo)
         {
             string codigo = txtCodigoArticulo.Text.Trim();
@@ -93,16 +124,61 @@ namespace PolirubroWPF
 
                 if (!string.IsNullOrWhiteSpace(codigo))
                 {
-                    articulo = db.Articulos.FirstOrDefault(a => a.CodigoProducto.ToLower() == codigo.ToLower());
+                    string codigoNormalizado = NormalizarTexto(codigo);
+
+                    articulo = db.Articulos
+                        .Include(a => a.Categoria)
+                        .ToList()
+                        .FirstOrDefault(a => NormalizarTexto(a.CodigoProducto) == codigoNormalizado);
                 }
                 else
                 {
-                    articulo = db.Articulos.FirstOrDefault(a => a.Nombre.ToLower().Contains(nombre.ToLower()));
+                    string nombreNormalizado = NormalizarTexto(nombre);
+
+                    var palabras = nombreNormalizado
+                        .Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                        .Where(p => !string.IsNullOrWhiteSpace(p))
+                        .ToList();
+
+                    var articulos = db.Articulos
+                        .Include(a => a.Categoria)
+                        .ToList();
+
+                    var coincidencias = articulos
+                        .Where(a =>
+                        {
+                            string textoBusqueda = NormalizarTexto(
+                                $"{a.CodigoProducto} {a.Nombre} {a.Descripcion} {a.Categoria?.Nombre}"
+                            );
+
+                            return palabras.All(p => textoBusqueda.Contains(p));
+                        })
+                        .ToList();
+
+                    if (coincidencias.Count == 0)
+                    {
+                        MessageBox.Show("No se encontró el artículo.");
+                        txtNombreArticulo.Focus();
+                        txtNombreArticulo.SelectAll();
+                        return;
+                    }
+
+                    if (coincidencias.Count > 1)
+                    {
+                        MessageBox.Show("Se encontraron varios artículos. Refiná la búsqueda.");
+                        txtNombreArticulo.Focus();
+                        txtNombreArticulo.SelectAll();
+                        return;
+                    }
+
+                    articulo = coincidencias.First();
                 }
 
                 if (articulo == null)
                 {
                     MessageBox.Show("No se encontró el artículo.");
+                    txtCodigoArticulo.Focus();
+                    txtCodigoArticulo.SelectAll();
                     return;
                 }
 

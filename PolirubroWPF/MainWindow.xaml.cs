@@ -2,7 +2,9 @@
 using Polirubro.Datos;
 using Polirubro.Entidades;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -19,37 +21,74 @@ namespace PolirubroWPF
                 db.Database.EnsureCreated();
             }
 
+            Loaded += (s, e) => txtBuscar.Focus();
+
             CargarArticulos();
+        }
+
+        private string NormalizarTexto(string texto)
+        {
+            if (string.IsNullOrWhiteSpace(texto))
+                return string.Empty;
+
+            string textoNormalizado = texto.Trim().ToLower().Normalize(NormalizationForm.FormD);
+            StringBuilder sb = new StringBuilder();
+
+            foreach (char c in textoNormalizado)
+            {
+                UnicodeCategory uc = CharUnicodeInfo.GetUnicodeCategory(c);
+
+                if (uc != UnicodeCategory.NonSpacingMark)
+                {
+                    sb.Append(c);
+                }
+            }
+
+            return sb.ToString().Normalize(NormalizationForm.FormC);
         }
 
         private void CargarArticulos(string filtro = "")
         {
             using (var db = new PolirubroDbContext())
             {
-                var query = db.Articulos
+                var articulos = db.Articulos
                     .Include(a => a.Categoria)
-                    .AsQueryable();
+                    .ToList();
 
                 if (!string.IsNullOrWhiteSpace(filtro))
                 {
-                    query = query.Where(a => a.Nombre.Contains(filtro) || a.CodigoProducto.Contains(filtro));
+                    string filtroNormalizado = NormalizarTexto(filtro);
+
+                    var palabras = filtroNormalizado
+                        .Split(' ', System.StringSplitOptions.RemoveEmptyEntries)
+                        .Where(p => !string.IsNullOrWhiteSpace(p))
+                        .ToList();
+
+                    articulos = articulos
+                        .Where(a =>
+                        {
+                            string textoBusqueda = NormalizarTexto(
+                                $"{a.CodigoProducto} {a.Nombre} {a.Descripcion} {a.Categoria?.Nombre}"
+                            );
+
+                            return palabras.All(p => textoBusqueda.Contains(p));
+                        })
+                        .ToList();
                 }
 
-                var lista = query.ToList();
+                dgArticulos.ItemsSource = articulos;
 
-                dgArticulos.ItemsSource = lista;
-
-                ActualizarAlertaStock(lista);
+                ActualizarAlertaStock(articulos);
             }
         }
 
         private void ActualizarAlertaStock(List<Articulo> articulos)
         {
-            bool hayStockBajo = articulos.Any(a => a.StockMinimo > 0 && a.Stock <= a.StockMinimo);
+            int cantidadBajoStock = articulos.Count(a => a.StockMinimo > 0 && a.Stock <= a.StockMinimo);
 
-            if (hayStockBajo)
+            if (cantidadBajoStock > 0)
             {
-                btnAlertaStock.Content = "Atención: hay productos con stock bajo";
+                btnAlertaStock.Content = $"Atención: {cantidadBajoStock} producto(s) con stock bajo";
                 btnAlertaStock.Visibility = Visibility.Visible;
             }
             else
