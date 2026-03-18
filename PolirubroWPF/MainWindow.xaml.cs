@@ -16,6 +16,29 @@ namespace PolirubroWPF
         {
             InitializeComponent();
 
+            Loaded += (s, e) =>
+            {
+                Activate();
+                txtBuscar.Focus();
+
+                if (Sesion.HayUsuarioLogueado)
+                {
+                    Title = $"Articulos - {Sesion.UsuarioActual.Nombre} ({(Sesion.UsuarioActual.EsAdmin ? "Admin" : "User")})";
+                    txtUsuarioActual.Text = $"Usuario: {Sesion.UsuarioActual.Nombre} ({(Sesion.UsuarioActual.EsAdmin ? "Admin" : "User")})";
+                }
+                if (!Sesion.UsuarioActual.EsAdmin)
+                {
+                    btnNuevoArticulo.Visibility = Visibility.Collapsed;
+                    btnVentas.Visibility = Visibility.Collapsed;
+                    btnDashboard.Visibility = Visibility.Collapsed;
+
+                    dgArticulos.Columns[3].Visibility = Visibility.Collapsed;
+                    dgArticulos.Columns[7].Visibility = Visibility.Collapsed;
+                    dgArticulos.Columns[8].Visibility = Visibility.Collapsed;
+                }
+            };
+
+
             using (var db = new PolirubroDbContext())
             {
                 db.Database.EnsureCreated();
@@ -104,6 +127,11 @@ namespace PolirubroWPF
 
         private void BtnNuevoArticulo_Click(object sender, RoutedEventArgs e)
         {
+            if (!Sesion.UsuarioActual.EsAdmin)
+            {
+                MessageBox.Show("No tenés permisos para realizar esta acción.");
+                return;
+            }
             var ventana = new FrmArticulo();
             var resultado = ventana.ShowDialog();
 
@@ -126,6 +154,11 @@ namespace PolirubroWPF
 
         private void BtnVentas_Click(object sender, RoutedEventArgs e)
         {
+            if (!Sesion.UsuarioActual.EsAdmin)
+            {
+                MessageBox.Show("No tenés permisos para ver esta sección.");
+                return;
+            }
             var ventana = new Ventas();
             ventana.ShowDialog();
             CargarArticulos(txtBuscar.Text);
@@ -142,6 +175,11 @@ namespace PolirubroWPF
 
         private void BtnEditar_Click(object sender, RoutedEventArgs e)
         {
+            if (!Sesion.UsuarioActual.EsAdmin)
+            {
+                MessageBox.Show("No tenés permisos para editar.");
+                return;
+            }
             var boton = sender as Button;
             int id = (int)boton.CommandParameter;
 
@@ -156,6 +194,11 @@ namespace PolirubroWPF
 
         private void BtnEliminar_Click(object sender, RoutedEventArgs e)
         {
+            if (!Sesion.UsuarioActual.EsAdmin)
+            {
+                MessageBox.Show("No tenés permisos para eliminar articulos.");
+                return;
+            }
             var boton = sender as Button;
             int id = (int)boton.CommandParameter;
 
@@ -180,6 +223,11 @@ namespace PolirubroWPF
 
         private void BtnDashboard_Click(object sender, RoutedEventArgs e)
         {
+            if (!Sesion.UsuarioActual.EsAdmin)
+            {
+                MessageBox.Show("No tenés aceso al Dashboard.");
+                return;
+            }
             FrmDashboard ventana = new FrmDashboard();
             ventana.ShowDialog();
         }
@@ -198,6 +246,30 @@ namespace PolirubroWPF
 
         private void dgArticulos_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+
         }
+        private void BtnCambiarUsuario_Click(object sender, RoutedEventArgs e)
+        {
+            Sesion.CerrarSesion();
+            LoginWindow login = new LoginWindow();
+            bool? resultado = login.ShowDialog();
+
+            if (resultado == true)
+            {
+                MainWindow nuevaVentana = new MainWindow();
+                Application.Current.MainWindow = nuevaVentana;
+                nuevaVentana.Show();
+                Close();
+            }
+            else
+            {
+                Application.Current.Shutdown();
+            }
+        }
+        private void BtnSalir_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
+        }
+
     }
 }
